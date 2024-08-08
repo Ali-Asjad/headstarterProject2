@@ -3,8 +3,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { firestore } from "@/firebase";
 import { Box, Button, Modal, Stack, TextField, Typography } from "@mui/material";
-import { collection, getDocs, query, setDoc, getDoc } from "firebase/firestore";
-import { Modak } from "next/font/google";
+import { collection, deleteDoc, doc, getDocs, query, setDoc, getDoc } from "firebase/firestore";
 
 export default function Home() {
   const [inventory, setInventory] = useState([])
@@ -46,7 +45,7 @@ export default function Home() {
 
     if (docSnap.exists()){
       const {quantity} = docSnap.data()
-      await setDoc(docRef, {quantity: quantity - 1})
+      await setDoc(docRef, {quantity: quantity + 1})
     } else {
       await setDoc(docRef, {quantity: 1})
     }
@@ -98,7 +97,7 @@ export default function Home() {
               fullWidth
               value={itemName}
               onChange={(e) => {
-                setItemName(e.target.valuealue)
+                setItemName(e.target.value)
               }}
             />
             <Button variant="outlined" onClick={() => {
@@ -136,11 +135,15 @@ export default function Home() {
               minHeight="150px" 
               display="flex" 
               alignItems="center"
-              justifyContent="center"
+              justifyContent="space-between"
               bgcolor="#f0f0f0"
               padding={5}
               >
-                <Typography>{name}</Typography>
+                <Typography variant="h3" color="#333" textAlign="center">{name.charAt(0).toUpperCase() + name.slice(1)}</Typography>
+                <Typography variant="h3" color="#333" textAlign="center">{quantity}</Typography>
+                <Button variant="contained" onClick={()=>{
+                  removeItem(name)
+                }}>Remove</Button>
               </Box>
             ))
           }
